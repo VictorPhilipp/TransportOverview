@@ -1,0 +1,55 @@
+
+<ng-container *ngFor="let line of lines; let isOdd=odd; let isEven=even;">
+	<h2>{{line.name}} ({{line.type}})</h2>
+	<h3>Vehicles</h3>
+	<table class="display">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Name</th>
+				<th>Passengers on board</th>
+				<th>Passengers<br/>(last week)</th>
+				<th>Income<br/>(last week)</th>
+				<th>Passengers<br/>(average)</th>
+				<th>Income<br/>(average)</th>
+				<th>Position on line</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let vehicle of line.vehicles; let isOdd=odd; let isEven=even;" class="row" [class.odd]="isOdd" [class.even]="isEven">
+				<td>{{vehicle.id}}</td>
+				<td>{{vehicle.name}}</td>
+				<td class="text-right">{{vehicle.numPassengers}} / {{vehicle.maxNumPassengers}}</td>
+				<td class="text-right">{{vehicle.lastWeekNumPassengers}}</td>
+				<td class="text-right currency">{{vehicle.lastWeekIncome / 100}}</td>
+				<td class="text-right">{{vehicle.averageNumPassengers}}</td>
+				<td class="text-right currency">{{vehicle.averageIncome / 100}}</td>
+				<td class="text-right">{{math.round(vehicle.relLinePos * 100)}} %</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<h3>Stops</h3>
+	<table class="display">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Name</th>
+				<th>District</th>
+				<th>Waiting passengers</th>
+				<th>Last week passengers<br/>(in / out)</th>
+				<th>Position on line</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let stop of line.stops; let isOdd=odd; let isEven=even;" class="row" [class.odd]="isOdd" [class.even]="isEven">
+				<td>{{stop.id}}</td>
+				<td>{{stop.name}}</td>
+				<td>{{stop.districtName}}</td>
+				<td class="text-right">{{stop.numWaitingPassengers}}</td>
+				<td class="text-right">+ {{stop.lastWeekServedPassengers.incoming}} / - {{stop.lastWeekServedPassengers.outgoing}}</td>
+				<td class="text-right">{{math.round(stop.relLinePos * 100)}} %</td>
+			</tr>
+		</tbody>
+	</table>
+</ng-container>

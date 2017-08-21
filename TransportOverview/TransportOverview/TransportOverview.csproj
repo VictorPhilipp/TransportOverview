@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1B961E99-DF01-4921-84AD-03C6F6AF9E83}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TransportOverview</RootNamespace>
+    <AssemblyName>TransportOverview</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>D:\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="CityWebServer.Extensibility">
+      <HintPath>D:\Games\Steam\steamapps\workshop\content\255710\411836742\CityWebServer.Extensibility.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ColossalManaged">
+      <HintPath>D:\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\ColossalManaged.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ICities">
+      <HintPath>D:\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\ICities.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ImprovedPublicTransport2">
+      <HintPath>D:\Games\Steam\steamapps\workshop\content\255710\928128676\ImprovedPublicTransport2.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>D:\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.Networking">
+      <HintPath>D:\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.Networking.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>D:\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Constants.cs" />
+    <Compile Include="Data\BalanceData.cs" />
+    <Compile Include="Data\Vector3Data.cs" />
+    <Compile Include="Data\ColorData.cs" />
+    <Compile Include="Data\TransportLineData.cs" />
+    <Compile Include="Data\TransportPassengersData.cs" />
+    <Compile Include="Data\TransportPassengersGroupData.cs" />
+    <Compile Include="Data\TransportStopData.cs" />
+    <Compile Include="Data\TransportVehicleData.cs" />
+    <Compile Include="Facade\AbstractFacade.cs" />
+    <Compile Include="Facade\IFacade.cs" />
+    <Compile Include="Facade\IFacadeFactory.cs" />
+    <Compile Include="Facade\Impl\FacadeFactory.cs" />
+    <Compile Include="Facade\Impl\TransportLineFacade.cs" />
+    <Compile Include="Facade\Impl\TransportStopFacade.cs" />
+    <Compile Include="Facade\Impl\TransportVehicleFacade.cs" />
+    <Compile Include="Facade\ITransportStopFacade.cs" />
+    <Compile Include="Facade\ITransportVehicleFacade.cs" />
+    <Compile Include="RequestHandler\IExtRequestHandler.cs" />
+    <Compile Include="RequestHandler\TransportVehiclesRequestHandler.cs" />
+    <Compile Include="RequestHandler\TransportStopsRequestHandler.cs" />
+    <Compile Include="RequestHandler\TransportLinesUIRequestHandler.cs" />
+    <Compile Include="RequestHandler\TransportLinesRequestHandler.cs" />
+    <Compile Include="Facade\ITransportLineFacade.cs" />
+    <Compile Include="TransportOverviewLoadingExtension.cs" />
+    <Compile Include="TransportOverviewMod.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\PluginUtil.cs" />
+    <Compile Include="Util\MimeUtil.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>del /Q /S "$(TargetDir)*"
+</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>mkdir "D:\Games\Steam\steamapps\common\Cities_Skylines\Files\Mods\TransportOverview"
+del /Q "D:\Games\Steam\steamapps\common\Cities_Skylines\Files\Mods\TransportOverview\*"
+xcopy /y /e "$(TargetDir)*" "D:\Games\Steam\steamapps\common\Cities_Skylines\Files\Mods\TransportOverview"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

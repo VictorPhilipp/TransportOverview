@@ -1,0 +1,26 @@
+﻿html, body {
+	font-size: 90%;
+}
+
+* {
+	font-family: Arial, sans-serif;
+}
+
+.colorBox {
+	display: inline-block;
+	width: 32px;
+	height: 32px;
+	border: 1px solid black;
+}
+
+.text-right {
+	text-align: right;
+}
+
+.currency::before {
+	content: '₡ ';
+}
+
+.percent::after {
+	content: ' %';
+}
