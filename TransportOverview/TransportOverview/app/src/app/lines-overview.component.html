@@ -1,0 +1,48 @@
+<h2>{{title}}</h2>
+<button #reloadLinesButton (click)="reloadLines()">Reload lines</button>
+
+<table class="display" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+	<thead>
+		<tr>
+			<th>Id</th>
+			<th>Type</th>
+			<th>Color</th>
+			<th>Name</th>
+			<th>Flags</th>
+			<th>Budget</th>
+			<th>Vehicles</th>
+			<th>Stops</th>
+			<th>Waiting<br/>passengers</th>
+			<th>Passengers<br/>on board</th>
+			<th>Passenger<br/>capacity</th>
+			<th>Passenger<br/>efficiency</th>
+			<th>Passengers<br/>(last week)</th>
+			<th>Income<br/>(last week)</th>
+			<th>Passengers<br/>(average)</th>
+			<th>Income<br/>(average)</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr *ngFor="let line of lines; let isOdd=odd; let isEven=even;" class="row" [class.odd]="isOdd" [class.even]="isEven">
+			<td>{{line.id}}</td>
+			<td>{{line.type}}</td>
+			<td>
+				<span class="colorBox" [ngStyle]="{'background-color': 'rgb(' + line.color.r + ',' + line.color.g + ',' + line.color.b + ')'}">
+				</span>
+			</td>
+			<td><a [routerLink]="['/line-details', line.id]" skipLocationChange>{{line.name}}</a></td>
+			<td>{{line.flags}}</td>
+			<td class="text-right percent">{{line.budgetInPercent}}</td>
+			<td class="text-right">{{line.vehicles.length}}</td>
+			<td class="text-right">{{line.stops.length}}</td>
+			<td class="text-right">{{getTotalNumLineWaitingPassengers(line)}}</td>
+			<td class="text-right">{{getTotalNumLinePassengersOnBoard(line)}}</td>
+			<td class="text-right">{{getTotalMaxNumLinePassengers(line)}}</td>
+			<td class="text-right percent">{{(getTotalNumLinePassengersOnBoard(line) / getTotalMaxNumLinePassengers(line) * 100).toFixed(1)}}</td>
+			<td class="text-right">{{getTotalNumLinePassengersLastWeek(line)}}</td>
+			<td class="text-right currency">{{getTotalLineIncome(line)}}</td>
+			<td class="text-right">{{getAverageNumLinePassengers(line)}}</td>
+			<td class="text-right currency">{{getAverageLineIncome(line)}}</td>
+		</tr>
+	</tbody>
+</table>

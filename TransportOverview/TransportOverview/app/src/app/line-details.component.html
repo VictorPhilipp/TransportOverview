@@ -1,0 +1,70 @@
+<h2>{{title}}</h2>
+
+	<table>
+		<tbody>
+			<tr>
+				<td class="strong">Id</td>
+				<td>{{line.id}}</td>
+			</tr>
+			<tr>
+				<td class="strong">Type</td>
+				<td>{{line.type}}</td>
+			</tr>
+			<tr>
+				<td class="strong">Color</td>
+				<td><span class="colorBox" [ngStyle]="{'background-color': 'rgb(' + line.color.r + ',' + line.color.g + ',' + line.color.b + ')'}"></span></td>
+			</tr>
+			<tr>
+				<td class="strong">Name</td>
+				<td>{{line.name}}</td>
+			</tr>
+			<tr>
+				<td class="strong">Flags</td>
+				<td>{{line.flags}}</td>
+			</tr>
+			<tr>
+				<td class="strong">Budget</td>
+				<td>{{line.budgetInPercent}}</td>
+			</tr>
+			<tr>
+				<td class="strong">Vehicles</td>
+				<td>{{line.vehicles.length}}</td>
+			</tr>
+			<tr>
+				<td class="strong">Stops</td>
+				<td>{{line.stops.length}}</td>
+			</tr>
+			<tr>
+				<td class="strong">Waiting passengers</td>
+				<td>{{getTotalNumLineWaitingPassengers(line)}}</td>
+			</tr>
+			<tr>
+				<td class="strong">Passengers on board</td>
+				<td>{{getTotalNumLinePassengersOnBoard(line)}}</td>
+			</tr>
+			<tr>
+				<td class="strong">Passenger capacity</td>
+				<td>{{getTotalMaxNumLinePassengers(line)}}</td>
+			</tr>
+			<tr>
+				<td class="strong">Passenger efficiency</td>
+				<td class="percent">{{(getTotalNumLinePassengersOnBoard(line) / getTotalMaxNumLinePassengers(line) * 100).toFixed(1)}}</td>
+			</tr>
+			<tr>
+				<td class="strong">Passengers (last week)</td>
+				<td>{{getTotalNumLinePassengersLastWeek(line)}}</td>
+			</tr>
+			<tr>
+				<td class="strong">Income (last week)</td>
+				<td class="currency">{{getTotalLineIncome(line)}}</td>
+			</tr>
+			<tr>
+				<td class="strong">Passengers (average)</td>
+				<td>{{getAverageNumLinePassengers(line)}}</td>
+			</tr>
+			<tr>
+				<td class="strong">Income (average)</td>
+				<td class="currency">{{getAverageLineIncome(line)}}</td>
+			</tr>
+		</tbody>
+	</table>
