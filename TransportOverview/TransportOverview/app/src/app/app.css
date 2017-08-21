@@ -24,3 +24,7 @@
 .percent::after {
 	content: ' %';
 }
+
+.strong {
+	font-weight: bold;
+}

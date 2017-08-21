@@ -18,9 +18,10 @@ import { TransportLineService } from './service/transport-line.service';
 export class LineDetailsComponent implements OnInit {
 	title = 'Transport line';
 	math = null;
+	line : TransportLine = null;
 
 	@Input()
-	lineId;
+	lineId : number;
   
 	constructor(
 		private transportLineService : TransportLineService,
@@ -31,14 +32,28 @@ export class LineDetailsComponent implements OnInit {
 	}
 	
 	ngOnInit() : void {
-		this.route.paramMap
+		this.route.params.subscribe(params => {
+			this.lineId = params['lineId'];
+		});
+
+		/*this.route.paramMap
 			.switchMap((params: ParamMap) => params.get('lineId'))
-			.subscribe(lineId => this.lineId = lineId);
-		this.reloadLine();
+			.subscribe(lineId => {
+				console.log(lineId);
+				this.lineId = Number(lineId);
+			});
+		*/
+		
+		// set up reload timer
+		let timer = Observable.timer(0, 3000);
+		timer.subscribe(t => this.reloadLine());
 	}
 
 	reloadLine() : void {
-		this.transportLineService.getTransportLine(this.lineId);
+		this.transportLineService.getTransportLine(this.lineId)
+		.subscribe((line : TransportLine) => {
+			this.line = line;
+		});
 	}
 	
 	getTotalLineIncome(line : TransportLine) : string {

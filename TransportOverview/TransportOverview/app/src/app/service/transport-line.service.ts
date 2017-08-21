@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import 'rxjs/Rx';
 import { Observable } from 'rxjs/Observable';
 
@@ -14,6 +14,14 @@ export class TransportLineService {
 	getTransportLines() : Observable<TransportLine[]> {
 		return this.http.get('/PTO/TransportLines')
 			.map(res => <TransportLine[]>res)
+			.catch(this.handleError);
+	}
+
+	getTransportLine(lineId : number) : Observable<TransportLine> {
+		return this.http.get('/PTO/TransportLines', {
+				params: new HttpParams().set('lineId', lineId.toString())
+			})
+			.map(res => <TransportLine>res)
 			.catch(this.handleError);
 	}
 	

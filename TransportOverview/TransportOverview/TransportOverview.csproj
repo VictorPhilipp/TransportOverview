@@ -82,6 +82,7 @@
     <Compile Include="Data\TransportPassengersGroupData.cs" />
     <Compile Include="Data\TransportStopData.cs" />
     <Compile Include="Data\TransportVehicleData.cs" />
+    <Compile Include="Extension\NameValueCollectionExtension.cs" />
     <Compile Include="Facade\AbstractFacade.cs" />
     <Compile Include="Facade\IFacade.cs" />
     <Compile Include="Facade\IFacadeFactory.cs" />
