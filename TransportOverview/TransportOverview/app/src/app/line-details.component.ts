@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, Input, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, Input, OnInit, AfterViewInit, AfterViewChecked, NgZone } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
@@ -8,14 +8,18 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Rx';
 
 import { TransportLine } from './dto/transport-line';
+import { TransportStop } from './dto/transport-stop';
+import { TransportVehicle } from './dto/transport-vehicle';
 import { TransportLineService } from './service/transport-line.service';
+
+declare var $;
 
 @Component({
 	selector: 'line-details',
 	templateUrl: './line-details.component.html',
 	styleUrls: ['./app.css']
 })
-export class LineDetailsComponent implements OnInit {
+export class LineDetailsComponent implements OnInit, AfterViewInit, AfterViewChecked {
 	title = 'Transport line';
 	math = null;
 	line : TransportLine = null;
@@ -26,11 +30,20 @@ export class LineDetailsComponent implements OnInit {
 	constructor(
 		private transportLineService : TransportLineService,
 		private route : ActivatedRoute,
-		private location : Location
+		private location : Location,
+		private zone : NgZone
 	) {
 		this.math = Math;		
 	}
-	
+
+	ngAfterViewChecked(): void {
+		(<any>$("#line-map-data")).subwayMap({ debug: false });
+	}
+
+	ngAfterViewInit(): void {
+		
+	}
+
 	ngOnInit() : void {
 		this.route.params.subscribe(params => {
 			this.lineId = params['lineId'];
@@ -43,9 +56,9 @@ export class LineDetailsComponent implements OnInit {
 				this.lineId = Number(lineId);
 			});
 		*/
-		
+
 		// set up reload timer
-		let timer = Observable.timer(0, 3000);
+		let timer = Observable.timer(0, 2000);
 		timer.subscribe(t => this.reloadLine());
 	}
 
@@ -54,6 +67,14 @@ export class LineDetailsComponent implements OnInit {
 		.subscribe((line : TransportLine) => {
 			this.line = line;
 		});
+	}
+
+	trackStopById(index : number, stop : TransportStop) : number {
+		return stop.id;
+	}
+
+	trackVehicleById(index : number, vehicle : TransportVehicle) : number {
+		return vehicle.id;
 	}
 	
 	getTotalLineIncome(line : TransportLine) : string {

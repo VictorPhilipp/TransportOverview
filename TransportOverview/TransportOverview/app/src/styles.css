@@ -1,1 +1,85 @@
-/* You can add global styles to this file, and also import other style files */
+html, body {
+	font-size: 90%;
+}
+
+* {
+	font-family: Arial, sans-serif;
+}
+
+.colorBox {
+	display: inline-block;
+	width: 32px;
+	height: 32px;
+	border: 1px solid black;
+}
+
+.text-right {
+	text-align: right;
+}
+
+.currency::before {
+	content: '₡ ';
+}
+
+.percent::after {
+	content: ' %';
+}
+
+.strong {
+	font-weight: bold;
+}
+
+.hidden {
+	display: none;
+}
+
+
+
+/* The main DIV for the map */
+.line-map
+{
+	margin: 0;
+	width: 100%;
+	height: 100px;
+	background-color: white;
+	position: relative;
+}
+
+/* Text labels */
+.stop-label
+{
+	text-decoration: none;
+	color: black;
+	transform: rotate(45deg);
+	text-align: left !important;
+	margin-top: 40px !important;
+	margin-left: -15px !important;
+}
+
+.vehicle-label
+{
+	font-size: 95%;
+	color: black;
+	margin-top: -5px !important;
+}
+
+#legend
+{
+	float: left;
+	width: 250px;
+	height:400px;
+}
+
+#legend div
+{
+	height: 25px;
+}
+
+#legend span
+{
+	margin: 5px 5px 5px 0;
+}
+.line-map span
+{
+	margin: 5px 5px 5px 0;
+}
