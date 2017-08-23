@@ -177,19 +177,16 @@ THE SOFTWARE.
 					if (markerInfo == undefined) markerInfo = "";
 
 					var anchor = $(this).children("a:first-child");
-					var label = $(this).text();
+					var label = $(this).html();
 					if (label === undefined) label = "";
 
-					var link = "";
 					var title = "";
 					if (anchor != undefined) {
-						link = $(anchor).attr("href");
-						if (link === undefined) link = "";
 						title = $(anchor).attr("title");
 						if (title === undefined) title = "";
 					}
 
-					self._debug("Coords=" + coords + "; Dir=" + dir + "; Link=" + link + "; Label=" + label + "; labelPos=" + labelPos + "; Marker=" + marker);
+					self._debug("Coords=" + coords + "; Dir=" + dir + "; Label=" + label + "; labelPos=" + labelPos + "; Marker=" + marker);
 
 					var x = "";
 					var y = "";
@@ -197,7 +194,7 @@ THE SOFTWARE.
 						x = Number(coords.split(",")[0]) + (marker.indexOf("interchange") > -1 ? 0 : shiftX);
 						y = Number(coords.split(",")[1]) + (marker.indexOf("interchange") > -1 ? 0 : shiftY);
 					}
-					nodes.push({ x: x, y: y, direction: dir, marker: marker, markerInfo: markerInfo, link: link, title: title, label: label, labelPos: labelPos });
+					nodes.push({ x: x, y: y, direction: dir, marker: marker, markerInfo: markerInfo, title: title, label: label, labelPos: labelPos });
 				});
 
 				lines.push({
@@ -386,7 +383,7 @@ THE SOFTWARE.
 			ctx.stroke();
 			ctx.fill();
 
-			// Render text labels and hyperlinks
+			// Render text labels
 			var pos = "";
 			var offset = width + 4;
 			var topOffset = 0;
@@ -424,10 +421,8 @@ THE SOFTWARE.
 					break;
 			}
 			var style = (textClass != "" ? "class='" + textClass + "' " : "") + "style='" + (textClass == "" ? "font-size:8pt;font-family:Verdana,Arial,Helvetica,Sans Serif;text-decoration:none;" : "") + "width:100px;" + (pos != "" ? pos : "") + ";position:absolute;top:" + (y /*+ el.offset().top*/ - (topOffset > 0 ? topOffset : 0)) + "px;left:" + (x /*+ el.offset().left*/) + "px;z-index:3000;'";
-			if (data.link != "")
-				$("<a " + style + " title='" + data.title.replace(/\\n/g, "<br />") + "' href='" + data.link + "' target='_new'>" + data.label.replace(/\\n/g, "<br />") + "</span>").appendTo(el);
-			else
-				$("<span " + style + ">" + data.label.replace(/\\n/g, "<br />") + "</span>").appendTo(el);
+			if (data.label != null && data.label.trim().length > 0)
+				$("<span " + style + ">" + data.label + "</span>").appendTo(el);
 
 		},
 		_drawGrid: function (el, scale, gridNumbers) {

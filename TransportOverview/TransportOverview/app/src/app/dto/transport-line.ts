@@ -15,4 +15,6 @@ export class TransportLine {
 	targetNumVehicles : number;
 	vehicles : TransportVehicle[];
 	stops : TransportStop[];
+	enqueuedVehiclePrefabs : string[];
+	allowedVehiclePrefabs : string[];
 }

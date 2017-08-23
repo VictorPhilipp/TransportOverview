@@ -46,12 +46,22 @@
 		public int targetNumVehicles = 0;
 
 		/// <summary>
-		/// Vehicle data
+		/// Active vehicles
 		/// </summary>
 		public TransportVehicleData[] vehicles = null;
 
 		/// <summary>
-		/// Stop data
+		/// Queued vehicle prefab names
+		/// </summary>
+		public string[] enqueuedVehiclePrefabs = null;
+
+		/// <summary>
+		/// Allowed vehicle prefab names
+		/// </summary>
+		public string[] allowedVehiclePrefabs = null;
+
+		/// <summary>
+		/// Transport stops
 		/// </summary>
 		public TransportStopData[] stops = null;
 	}

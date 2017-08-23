@@ -35,14 +35,31 @@
 			<td class="text-right percent">{{line.budgetInPercent}}</td>
 			<td class="text-right">{{line.vehicles.length}}</td>
 			<td class="text-right">{{line.stops.length}}</td>
-			<td class="text-right">{{getTotalNumLineWaitingPassengers(line)}}</td>
-			<td class="text-right">{{getTotalNumLinePassengersOnBoard(line)}}</td>
-			<td class="text-right">{{getTotalMaxNumLinePassengers(line)}}</td>
-			<td class="text-right percent">{{(getTotalNumLinePassengersOnBoard(line) / getTotalMaxNumLinePassengers(line) * 100).toFixed(1)}}</td>
-			<td class="text-right">{{getTotalNumLinePassengersLastWeek(line)}}</td>
-			<td class="text-right currency">{{getTotalLineIncome(line)}}</td>
-			<td class="text-right">{{getAverageNumLinePassengers(line)}}</td>
-			<td class="text-right currency">{{getAverageLineIncome(line)}}</td>
+			<td class="text-right">{{getTransportLineService().getTotalNumLineWaitingPassengers(line)}}</td>
+			<td class="text-right">{{getTransportLineService().getTotalNumLinePassengersOnBoard(line)}}</td>
+			<td class="text-right">{{getTransportLineService().getTotalMaxNumLinePassengers(line)}}</td>
+			<td class="text-right percent">{{(getTransportLineService().getTotalNumLinePassengersOnBoard(line) / getTransportLineService().getTotalMaxNumLinePassengers(line) * 100).toFixed(1)}}</td>
+			<td class="text-right">{{getTransportLineService().getTotalNumLinePassengersLastWeek(line)}}</td>
+			<td class="text-right currency">{{getTransportLineService().getTotalLineIncome(line)}}</td>
+			<td class="text-right">{{getTransportLineService().getAverageNumLinePassengers(line)}}</td>
+			<td class="text-right currency">{{getTransportLineService().getAverageLineIncome(line)}}</td>
 		</tr>
 	</tbody>
 </table>
+
+<!--<ng-container *ngIf="lines != null">
+	<h2>Live state</h2>
+
+	<div id="line-map" class="line-map">
+	</div>
+
+	<div id="line-map-data" data-columns="540" data-rows="540" data-targetElement="#line-map" data-cellSize="2" data-legendId="legend" data-lineWidth="2" class="hidden">
+		<ng-container *ngFor="let line of lines; let i = index;">
+			<ul [attr.data-color]="'rgb(' + line.color.r + ',' + line.color.g + ',' + line.color.b + ')'" [attr.data-label]="line.name" data-textClass="stop-label" [attr.data-shiftCoords]="'0,' + i">
+				<li *ngFor="let stop of line.stops; trackBy: trackStopById;" data-marker="station" data-labelPos="s" [attr.data-coords]="getStopColumnIndex(stop) + ',' + getStopRowIndex(stop)"></li>
+	
+				<li *ngIf="line.stops.length > 0" data-marker="station" data-labelPos="s" [attr.data-coords]="getStopColumnIndex(line.stops[0]) + ',' + getStopRowIndex(line.stops[0])"></li>
+			</ul>
+		</ng-container>
+	</div>
+</ng-container>-->

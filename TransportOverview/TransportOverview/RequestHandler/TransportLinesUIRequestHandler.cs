@@ -14,7 +14,7 @@ using TransportOverview.Util;
 
 namespace TransportOverview.RequestHandler {
 	public class TransportLinesUIRequestHandler : RequestHandlerBase, IExtRequestHandler {
-		public static readonly string HANDLER_PATH = "/PTO/TransportLinesUI";
+		public static readonly string HANDLER_PATH = "/PTO/UI";
 
 		public static TransportLinesUIRequestHandler Instance { get; private set; }
 

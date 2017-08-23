@@ -7,6 +7,12 @@ namespace TransportOverview.Facade.Impl {
 	public class FacadeFactory : IFacadeFactory {
 		public static IFacadeFactory Instance = new FacadeFactory();
 
+		public ICameraFacade CameraFacade {
+			get {
+				return Impl.CameraFacade.Instance;
+			}
+		}
+
 		public ITransportLineFacade TransportLineFacade {
 			get {
 				return Impl.TransportLineFacade.Instance;

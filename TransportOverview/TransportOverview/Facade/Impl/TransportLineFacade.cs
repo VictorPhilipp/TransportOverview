@@ -1,4 +1,5 @@
 ﻿using ColossalFramework;
+using ImprovedPublicTransport2;
 using ImprovedPublicTransport2.Detour;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,10 @@ namespace TransportOverview.Facade.Impl {
 		public TransportLineData GetTransportLine(ushort lineId) {
 			TransportManager transportMan = Singleton<TransportManager>.instance;
 
+			if (!TransportOverviewLoadingExtension.GameLoaded) {
+				return null;
+			}
+
 			if ((transportMan.m_lines.m_buffer[lineId].m_flags & (TransportLine.Flags.Created | TransportLine.Flags.Temporary | TransportLine.Flags.Hidden)) != TransportLine.Flags.Created) {
 				return null;
 			}
@@ -44,8 +49,13 @@ namespace TransportOverview.Facade.Impl {
 			TransportInfo lineInfo = transportMan.m_lines.m_buffer[lineId].Info;
 			if (lineInfo != null) {
 				line.type = lineInfo.GetSubService();
+
+				line.allowedVehiclePrefabs = VehiclePrefabs.instance.GetPrefabs(lineInfo.m_class.m_service, lineInfo.m_class.m_subService, lineInfo.m_class.m_level).Select(pf => pf.Info == null ? "<unnamed>" : pf.Info.name).ToArray(); // TODO refactor; might be a bit too much here
+				Array.Sort(line.allowedVehiclePrefabs); // TODO might be a bit too much here
 			}
 			line.id = (int)lineId;
+			
+			line.enqueuedVehiclePrefabs = TransportLineMod.GetEnqueuedVehicles(lineId);
 
 			if ((transportMan.m_lines.m_buffer[lineId].m_flags & TransportLine.Flags.CustomColor) != TransportLine.Flags.None) {
 				line.color = new ColorData(ref transportMan.m_lines.m_buffer[lineId].m_color);

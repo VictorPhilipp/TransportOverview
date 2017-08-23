@@ -84,8 +84,10 @@
     <Compile Include="Data\TransportVehicleData.cs" />
     <Compile Include="Extension\NameValueCollectionExtension.cs" />
     <Compile Include="Facade\AbstractFacade.cs" />
+    <Compile Include="Facade\ICameraFacade.cs" />
     <Compile Include="Facade\IFacade.cs" />
     <Compile Include="Facade\IFacadeFactory.cs" />
+    <Compile Include="Facade\Impl\CameraFacade.cs" />
     <Compile Include="Facade\Impl\FacadeFactory.cs" />
     <Compile Include="Facade\Impl\TransportLineFacade.cs" />
     <Compile Include="Facade\Impl\TransportStopFacade.cs" />
@@ -93,6 +95,7 @@
     <Compile Include="Facade\ITransportStopFacade.cs" />
     <Compile Include="Facade\ITransportVehicleFacade.cs" />
     <Compile Include="RequestHandler\IExtRequestHandler.cs" />
+    <Compile Include="RequestHandler\CameraRequestHandler.cs" />
     <Compile Include="RequestHandler\TransportVehiclesRequestHandler.cs" />
     <Compile Include="RequestHandler\TransportStopsRequestHandler.cs" />
     <Compile Include="RequestHandler\TransportLinesUIRequestHandler.cs" />
@@ -104,7 +107,12 @@
     <Compile Include="Util\PluginUtil.cs" />
     <Compile Include="Util\MimeUtil.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\CSUtil.CameraControl\CSUtil.CameraControl\CSUtil.CameraControl\CSUtil.CameraControl.csproj">
+      <Project>{f8759084-df5b-4a54-b73c-824640a8fa3f}</Project>
+      <Name>CSUtil.CameraControl</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>del /Q /S "$(TargetDir)*"

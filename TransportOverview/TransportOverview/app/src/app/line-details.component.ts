@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, Input, OnInit, AfterViewInit, AfterViewChecked, NgZone } from '@angular/core';
+import { Component, ViewChild, ViewChildren, ElementRef, QueryList, Input, OnInit, AfterViewInit, AfterViewChecked, NgZone } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
@@ -10,7 +10,11 @@ import { Subject } from 'rxjs/Rx';
 import { TransportLine } from './dto/transport-line';
 import { TransportStop } from './dto/transport-stop';
 import { TransportVehicle } from './dto/transport-vehicle';
+
+import { CameraService } from './service/camera.service';
 import { TransportLineService } from './service/transport-line.service';
+import { TransportStopService } from './service/transport-stop.service';
+import { TransportVehicleService } from './service/transport-vehicle.service';
 
 declare var $;
 
@@ -23,17 +27,27 @@ export class LineDetailsComponent implements OnInit, AfterViewInit, AfterViewChe
 	title = 'Transport line';
 	math = null;
 	line : TransportLine = null;
+	numColumns : number = 100;
+	leftBorder : number = 5;
+	selectedPrefabIndex : number = 0;
 
 	@Input()
 	lineId : number;
   
 	constructor(
 		private transportLineService : TransportLineService,
+		private transportStopService : TransportStopService,
+		private transportVehicleService : TransportVehicleService,
+		private cameraService : CameraService,
 		private route : ActivatedRoute,
 		private location : Location,
 		private zone : NgZone
 	) {
-		this.math = Math;		
+		this.math = Math;
+		window['lineDetailsComponent'] = {
+			instance: this,
+			zone: zone
+		};
 	}
 
 	ngAfterViewChecked(): void {
@@ -66,6 +80,7 @@ export class LineDetailsComponent implements OnInit, AfterViewInit, AfterViewChe
 		this.transportLineService.getTransportLine(this.lineId)
 		.subscribe((line : TransportLine) => {
 			this.line = line;
+			this.enableUI();
 		});
 	}
 
@@ -76,32 +91,38 @@ export class LineDetailsComponent implements OnInit, AfterViewInit, AfterViewChe
 	trackVehicleById(index : number, vehicle : TransportVehicle) : number {
 		return vehicle.id;
 	}
-	
-	getTotalLineIncome(line : TransportLine) : string {
-		return this.transportLineService.getTotalLineIncome(line);
+
+	addTransportVehicle(lineId : number, index : number) : void {
+		this.disableUI();
+		this.getTransportVehicleService().addTransportVehicle(lineId, index);
 	}
-	
-	getTotalNumLinePassengersLastWeek(line : TransportLine) : number {
-		return this.transportLineService.getTotalNumLinePassengersLastWeek(line);
+
+	removeTransportVehicle(lineId : number, index : number) : void {
+		this.disableUI();
+		this.getTransportVehicleService().removeTransportVehicle(lineId, index);
 	}
-	
-	getTotalNumLineWaitingPassengers(line : TransportLine) : number {
-		return this.transportLineService.getTotalNumLineWaitingPassengers(line);
+
+	enableUI() : void {
+		$('button').prop('disabled', false);
 	}
-	
-	getAverageLineIncome(line : TransportLine) : string {
-		return this.transportLineService.getAverageLineIncome(line);
+
+	disableUI() : void {
+		$('button').prop('disabled', true);
 	}
-	
-	getAverageNumLinePassengers(line : TransportLine) : number {
-		return this.transportLineService.getAverageNumLinePassengers(line);
+
+	getTransportLineService() : TransportLineService {
+		return this.transportLineService;
 	}
-	
-	getTotalNumLinePassengersOnBoard(line : TransportLine) : number {
-		return this.transportLineService.getTotalNumLinePassengersOnBoard(line);
+
+	getTransportStopService() : TransportStopService {
+		return this.transportStopService;
 	}
-	
-	getTotalMaxNumLinePassengers(line : TransportLine) : number {
-		return this.transportLineService.getTotalMaxNumLinePassengers(line);
+
+	getTransportVehicleService() : TransportVehicleService {
+		return this.transportVehicleService;
+	}
+
+	getCameraService() : CameraService {
+		return this.cameraService;
 	}
 }

@@ -1,129 +1,197 @@
 <ng-container *ngIf="line != null">
-	<h2>{{title}}: {{line.name}}</h2>
+	<h2>{{line.name}}</h2>
 
-	<table>
+	<h3>Live state</h3>
+	<div id="line-map" class="line-map">
+	</div>
+
+	<div id="line-map-data" [attr.data-columns]="numColumns + leftBorder" data-targetElement="#line-map" data-rows="5" data-cellSize="10"
+	 data-legendId="legend" data-grid="false" data-lineWidth="6" class="hidden">
+		<ul [attr.data-color]="'rgb(' + line.color.r + ',' + line.color.g + ',' + line.color.b + ')'" [attr.data-label]="line.name"
+		 data-textClass="stop-label">
+			<li *ngFor="let stop of line.stops; trackBy: trackStopById; let i = index;" data-marker="station" data-labelPos="s" [attr.data-coords]="(leftBorder + math.round((numColumns - 1) * stop.relLinePos)) + ',2'">
+				<a onclick="javascript:window.lineDetailsComponent.zone.run(() => window.lineDetailsComponent.instance.getCameraService().goToNode($(this).attr('data-node-id')));"
+				 [attr.data-node-id]="stop.id">
+					{{stop.name != null ? stop.name : '#' + (i+1)}}
+					<span *ngIf="stop.numWaitingPassengers > 0" class="strong">
+						({{stop.numWaitingPassengers}})
+					</span>
+				</a>
+			</li>
+
+			<li *ngIf="line.stops.length > 0" data-marker="station" data-labelPos="s" [attr.data-coords]="(leftBorder + numColumns - 1) + ',2'">
+				{{line.stops[0].name != null ? line.stops[0].name : '#1'}}
+			</li>
+		</ul>
+
+		<ul [attr.data-color]="'rgb(' + line.color.r + ',' + line.color.g + ',' + line.color.b + ')'" [attr.data-label]="'Vehicles on ' + line.name"
+		 data-textClass="vehicle-label">
+			<li *ngFor="let vehicle of line.vehicles; trackBy: trackVehicleById;" data-marker="@interchange" data-labelPos="n" [attr.data-coords]="(leftBorder + math.round(vehicle.relLinePos * (numColumns - 1))) + ',2'">
+				<a onclick="javascript:window.lineDetailsComponent.zone.run(() => window.lineDetailsComponent.instance.getCameraService().goToVehicle($(this).attr('data-vehicle-id')));"
+				 [attr.data-vehicle-id]="vehicle.id">
+					{{vehicle.numPassengers}}/{{vehicle.maxNumPassengers}}
+				</a>
+			</li>
+		</ul>
+	</div>
+
+	<h3>Details</h3>
+	<div class="rw">
+		<div class="col small-6">
+			<table>
+				<tbody>
+					<tr>
+						<td class="strong">Id</td>
+						<td>{{line.id}} ({{lineId}})</td>
+					</tr>
+					<tr>
+						<td class="strong">Type</td>
+						<td>{{line.type}}</td>
+					</tr>
+					<tr>
+						<td class="strong">Color</td>
+						<td><span class="colorBox" [ngStyle]="{'background-color': 'rgb(' + line.color.r + ',' + line.color.g + ',' + line.color.b + ')'}"></span></td>
+					</tr>
+					<tr>
+						<td class="strong">Name</td>
+						<td>{{line.name}}</td>
+					</tr>
+					<tr>
+						<td class="strong">Flags</td>
+						<td>{{line.flags}}</td>
+					</tr>
+					<tr>
+						<td class="strong">Budget</td>
+						<td class="percent">{{line.budgetInPercent}}</td>
+					</tr>
+					<tr>
+						<td class="strong">Vehicles</td>
+						<td>{{line.vehicles.length}}</td>
+					</tr>
+					<tr>
+						<td class="strong">Stops</td>
+						<td>{{line.stops.length}}</td>
+					</tr>
+					<tr>
+						<td class="strong">Waiting passengers</td>
+						<td>{{getTransportLineService().getTotalNumLineWaitingPassengers(line)}}</td>
+					</tr>
+					<tr>
+						<td class="strong">Passengers on board</td>
+						<td>{{getTransportLineService().getTotalNumLinePassengersOnBoard(line)}}</td>
+					</tr>
+					<tr>
+						<td class="strong">Passenger capacity</td>
+						<td>{{getTransportLineService().getTotalMaxNumLinePassengers(line)}}</td>
+					</tr>
+					<tr>
+						<td class="strong">Passenger efficiency</td>
+						<td class="percent">{{(getTransportLineService().getTotalNumLinePassengersOnBoard(line) / getTransportLineService().getTotalMaxNumLinePassengers(line)
+							* 100).toFixed(1)}}</td>
+					</tr>
+					<tr>
+						<td class="strong">Passengers (last week)</td>
+						<td>{{getTransportLineService().getTotalNumLinePassengersLastWeek(line)}}</td>
+					</tr>
+					<tr>
+						<td class="strong">Income (last week)</td>
+						<td class="currency">{{getTransportLineService().getTotalLineIncome(line)}}</td>
+					</tr>
+					<tr>
+						<td class="strong">Passengers (average)</td>
+						<td>{{getTransportLineService().getAverageNumLinePassengers(line)}}</td>
+					</tr>
+					<tr>
+						<td class="strong">Income (average)</td>
+						<td class="currency">{{getTransportLineService().getAverageLineIncome(line)}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="col small-6">
+			<ng-container *ngIf="line.allowedVehiclePrefabs.length > 0">
+				<h4>Add vehicles</h4>
+				<select (change)="selectedPrefabIndex = $event.target.value;">
+						<option *ngFor="let vehiclePrefab of line.allowedVehiclePrefabs; let i=index; let isOdd=odd; let isEven=even;" [value]="i">{{vehiclePrefab}}</option>
+					</select>
+				<button (click)="addTransportVehicle(line.id, selectedPrefabIndex)">Add vehicle</button>
+			</ng-container>
+
+			<ng-container *ngIf="line.enqueuedVehiclePrefabs.length > 0">
+				<h4>Vehicles queued</h4>
+				<table class="dataTable display">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let vehiclePrefab of line.enqueuedVehiclePrefabs; let i=index; let isOdd=odd; let isEven=even;" class="row" [class.odd]="isOdd"
+						 [class.even]="isEven">
+							<td>{{vehiclePrefab}}</td>
+							<td><button (click)="removeTransportVehicle(line.id, i)">Dequeue</button></td>
+						</tr>
+					</tbody>
+				</table>
+			</ng-container>
+		</div>
+	</div>
+
+	<h3>Vehicles</h3>
+	<table class="dataTable display">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Name</th>
+				<th>Passengers on board</th>
+				<th>Passengers<br/>(last week)</th>
+				<th>Income<br/>(last week)</th>
+				<th>Passengers<br/>(average)</th>
+				<th>Income<br/>(average)</th>
+				<th>Position on line</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
 		<tbody>
-			<tr>
-				<td class="strong">Id</td>
-				<td>{{line.id}} ({{lineId}})</td>
-			</tr>
-			<tr>
-				<td class="strong">Type</td>
-				<td>{{line.type}}</td>
-			</tr>
-			<tr>
-				<td class="strong">Color</td>
-				<td><span class="colorBox" [ngStyle]="{'background-color': 'rgb(' + line.color.r + ',' + line.color.g + ',' + line.color.b + ')'}"></span></td>
-			</tr>
-			<tr>
-				<td class="strong">Name</td>
-				<td>{{line.name}}</td>
-			</tr>
-			<tr>
-				<td class="strong">Flags</td>
-				<td>{{line.flags}}</td>
-			</tr>
-			<tr>
-				<td class="strong">Budget</td>
-				<td>{{line.budgetInPercent}}</td>
-			</tr>
-			<tr>
-				<td class="strong">Vehicles</td>
-				<td>{{line.vehicles.length}}</td>
-			</tr>
-			<tr>
-				<td class="strong">Stops</td>
-				<td>{{line.stops.length}}</td>
-			</tr>
-			<tr>
-				<td class="strong">Waiting passengers</td>
-				<td>{{getTotalNumLineWaitingPassengers(line)}}</td>
-			</tr>
-			<tr>
-				<td class="strong">Passengers on board</td>
-				<td>{{getTotalNumLinePassengersOnBoard(line)}}</td>
-			</tr>
-			<tr>
-				<td class="strong">Passenger capacity</td>
-				<td>{{getTotalMaxNumLinePassengers(line)}}</td>
-			</tr>
-			<tr>
-				<td class="strong">Passenger efficiency</td>
-				<td class="percent">{{(getTotalNumLinePassengersOnBoard(line) / getTotalMaxNumLinePassengers(line) * 100).toFixed(1)}}</td>
-			</tr>
-			<tr>
-				<td class="strong">Passengers (last week)</td>
-				<td>{{getTotalNumLinePassengersLastWeek(line)}}</td>
-			</tr>
-			<tr>
-				<td class="strong">Income (last week)</td>
-				<td class="currency">{{getTotalLineIncome(line)}}</td>
-			</tr>
-			<tr>
-				<td class="strong">Passengers (average)</td>
-				<td>{{getAverageNumLinePassengers(line)}}</td>
-			</tr>
-			<tr>
-				<td class="strong">Income (average)</td>
-				<td class="currency">{{getAverageLineIncome(line)}}</td>
+			<tr *ngFor="let vehicle of line.vehicles; let i=index; let isOdd=odd; let isEven=even;" class="row" [class.odd]="isOdd" [class.even]="isEven">
+				<td>{{vehicle.id}}</td>
+				<td>{{vehicle.name}}</td>
+				<td class="text-right">{{vehicle.numPassengers}} / {{vehicle.maxNumPassengers}}</td>
+				<td class="text-right">{{vehicle.lastWeekNumPassengers}}</td>
+				<td class="text-right currency">{{(vehicle.lastWeekIncome / 100).toFixed(2)}}</td>
+				<td class="text-right">{{vehicle.averageNumPassengers}}</td>
+				<td class="text-right currency">{{(vehicle.averageIncome / 100).toFixed(2)}}</td>
+				<td class="text-right">{{math.round(vehicle.relLinePos * 100)}} %</td>
+				<td><button (click)="getCameraService().goToVehicle(vehicle.id)">Center camera</button> <button *ngIf="line.enqueuedVehiclePrefabs.length == 0"
+					 (click)="removeTransportVehicle(line.id, i)">Remove</button></td>
 			</tr>
 		</tbody>
 	</table>
 
-	<h2>Live state</h2>
-	<div id="line-map" class="line-map">
-	</div>
-
-	<div id="line-map-data" [attr.data-columns]="10 * (line.stops.length+1)" data-targetElement="#line-map" data-rows="5" data-cellSize="5" data-legendId="legend" data-gridNumbers="true" data-grid="false" data-lineWidth="6" class="hidden">
-		<ul [attr.data-color]="'rgb(' + line.color.r + ',' + line.color.g + ',' + line.color.b + ')'" [attr.data-label]="line.name" data-textClass="stop-label">
-			<li *ngFor="let stop of line.stops; trackBy: trackStopById; let i = index;" data-marker="station" data-labelPos="s" [attr.data-coords]="(i*10+1) + ',2'">
-				{{stop.name != null ? stop.name : 'Stop #' + (i+1)}} ({{stop.numWaitingPassengers}})
-			</li>
-
-			<li *ngIf="line.stops.length > 0" data-marker="station" data-labelPos="s" [attr.data-coords]="(line.stops.length*10+1) + ',2'">
-				{{line.stops[0].name != null ? line.stops[0].name : 'Stop #1'}}
-			</li>
-		</ul>
-
-		<ul [attr.data-color]="'rgb(' + line.color.r + ',' + line.color.g + ',' + line.color.b + ')'" [attr.data-label]="'Vehicles on ' + line.name" data-textClass="vehicle-label">
-			<li *ngFor="let vehicle of line.vehicles; trackBy: trackVehicleById;" data-marker="@interchange" 
-			data-labelPos="n" [attr.data-coords]="math.round(vehicle.relLinePos * 10 * line.stops.length) + ',2'">{{vehicle.numPassengers}}/{{vehicle.maxNumPassengers}}</li>
-		</ul>
-	</div>
-
-	<!--<div class="subway-map" data-columns="50" data-rows="50" data-cellSize="40" data-legendId="legend" data-textClass="text" data-gridNumbers="true" data-grid="false" data-lineWidth="6">
-		<ul data-color="#ff4db2" data-label="jQuery Widgets">
-			<li data-coords="2,30" data-marker="interchange"><a href="http://jqueryui.com/demos/accordion/">Accordion</a></li>
-			<li data-coords="9,2">x</li>
-			<li data-coords="5,3" data-dir="E"></li>
-			<li data-coords="5,7" data-marker="@station" data-labelPos="W"><a href="http://jqueryui.com/demos/slider/">Slider</a></li>
-			
-			<li data-coords="6,4" data-dir="S" data-marker="interchange" data-markerInfo="h5"><a href="http://jqueryui.com/demos/datepicker/">Date\npicker</a></li>
-			<li data-coords="7,4"></li>
-			<li data-coords="7.15,8" data-marker="@station" data-labelPos="E"><a href="http://jqueryui.com/demos/dialog/">Dialog</a></li>
-			
-			<li data-coords="8,3" data-dir="E"></li>
-			<li data-coords="8,2"></li>
-			<li data-coords="9,1" data-dir="N"></li>
-			<li data-coords="10,2" data-dir="E" data-marker="interchange" data-labelPos="E"><a href="http://jqueryui.com/demos/button/">Button</a></li>
-			<li data-coords="10,5"></li>
-			<li data-coords="9,6" data-dir="S" data-marker="station"><a href="http://jqueryui.com/demos/progressbar/">Progress\nbar</a></li>
-			<li data-coords="6,9"></li>
-			<li data-coords="5,8" data-dir="W"></li>
-			<li data-coords="5,7"></li>
-			<li data-coords="4,6" data-dir="N"></li>
-			<li data-coords="2,6"><a href="http://jqueryui.com/demos/tabs/">Tabs</a></li>
-		</ul>
-
-		<ul data-color="#00ff00" data-label="jQuery Interactions" data-shiftCoords="0,-2">
-			<li data-coords="2,6"></li>
-			<li data-coords="2,2.9" data-marker="@interchange">aa </li>
-			
-			<li data-coords="5,6" data-marker="@station" data-labelPos="N"><a href="http://jqueryui.com/demos/selectable/">Selectable</a></li>
-			<li data-coords="6,6"></li>
-			<li data-coords="7,3" data-marker="@station" data-labelPos="W"><a href="http://jqueryui.com/demos/resizeable/">Resizeable</a></li>
-			<li data-coords="7,5" data-dir="E" data-marker="station" data-labelPos="E"><a href="http://jqueryui.com/demos/droppable/">Droppable</a></li>
-			<li data-coords="7,1" data-marker="interchange" data-labelPos="W"><a href="http://jqueryui.com/demos/draggable/">Draggable</a></li>
-		</ul>
-	</div>-->
+	<h3>Stops</h3>
+	<table class="dataTable display">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Name</th>
+				<th>District</th>
+				<th>Waiting passengers</th>
+				<th>Last week passengers<br/>(in / out)</th>
+				<th>Position on line</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let stop of line.stops; let isOdd=odd; let isEven=even; let i = index;" class="row" [class.odd]="isOdd" [class.even]="isEven">
+				<td>{{stop.id}}</td>
+				<td>{{stop.name != null ? stop.name : 'Stop #' + (i+1)}}</td>
+				<td>{{stop.districtName == null ? 'None' : stop.districtName}}</td>
+				<td class="text-right">{{stop.numWaitingPassengers}}</td>
+				<td class="text-right">+ {{stop.lastWeekServedPassengers.incoming}} / - {{stop.lastWeekServedPassengers.outgoing}}</td>
+				<td class="text-right">{{math.round(stop.relLinePos * 100)}} %</td>
+				<td><button (click)="getCameraService().goToNode(stop.id)">Center camera</button></td>
+			</tr>
+		</tbody>
+	</table>
 </ng-container>

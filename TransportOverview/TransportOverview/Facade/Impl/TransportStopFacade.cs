@@ -12,12 +12,21 @@ namespace TransportOverview.Facade.Impl {
 		public static ITransportStopFacade Instance = new TransportStopFacade();
 
 		public IList<TransportStopData> GetTransportLineStops(ushort lineId) {
-			IList<TransportStopData> stops = new List<TransportStopData>();
-
 			TransportManager transportMan = Singleton<TransportManager>.instance;
 			NetManager netMan = Singleton<NetManager>.instance;
 			InstanceManager instanceMan = Singleton<InstanceManager>.instance;
 			DistrictManager districtMan = Singleton<DistrictManager>.instance;
+
+			IList<TransportStopData> stops = new List<TransportStopData>();
+
+			if (!TransportOverviewLoadingExtension.GameLoaded) {
+				return stops;
+			}
+
+			if ((transportMan.m_lines.m_buffer[lineId].m_flags & (TransportLine.Flags.Created | TransportLine.Flags.Temporary | TransportLine.Flags.Hidden)) != TransportLine.Flags.Created) {
+				// error: method should only be called for valid lines
+				return null;
+			}
 
 			uint problems = (uint)Notification.Problem.None;
 			float[] stopDistances = new float[transportMan.m_lines.m_buffer[lineId].CountStops((ushort)lineId)];

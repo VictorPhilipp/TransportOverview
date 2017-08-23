@@ -1,4 +1,5 @@
 ﻿using ColossalFramework;
+using ImprovedPublicTransport2;
 using ImprovedPublicTransport2.Detour;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,19 @@ namespace TransportOverview.Facade.Impl {
 		public static ITransportVehicleFacade Instance = new TransportVehicleFacade();
 
 		public IList<TransportVehicleData> GetTransportLineVehicles(ushort lineId) {
-			IList<TransportVehicleData> vehicles = new List<TransportVehicleData>();
-
 			TransportManager transportMan = Singleton<TransportManager>.instance;
 			VehicleManager vehicleMan = Singleton<VehicleManager>.instance;
+
+			IList<TransportVehicleData> vehicles = new List<TransportVehicleData>();
+
+			if (!TransportOverviewLoadingExtension.GameLoaded) {
+				return vehicles;
+			}
+
+			if ((transportMan.m_lines.m_buffer[lineId].m_flags & (TransportLine.Flags.Created | TransportLine.Flags.Temporary | TransportLine.Flags.Hidden)) != TransportLine.Flags.Created) {
+				// error: method should only be called for valid lines
+				return null;
+			}
 
 			ushort curVehicleId = transportMan.m_lines.m_buffer[lineId].m_vehicles;
 			int iter = 0;
@@ -64,6 +74,137 @@ namespace TransportOverview.Facade.Impl {
 			}
 
 			return vehicles;
+		}
+
+		public bool AddTransportVehicle(ushort lineId, int? prefabIndex = null) {
+			TransportManager transportMan = Singleton<TransportManager>.instance;
+			SimulationManager simMan = Singleton<SimulationManager>.instance;
+
+			if (!TransportOverviewLoadingExtension.GameLoaded) {
+				return false;
+			}
+
+			if ((transportMan.m_lines.m_buffer[lineId].m_flags & (TransportLine.Flags.Created | TransportLine.Flags.Temporary | TransportLine.Flags.Hidden)) != TransportLine.Flags.Created) {
+				// invalid line
+				return false;
+			}
+
+			TransportInfo lineInfo = transportMan.m_lines.m_buffer[lineId].Info;
+			if (lineInfo == null) {
+				return false;
+			}
+			string[] prefabNames = VehiclePrefabs.instance.GetPrefabs(lineInfo.m_class.m_service, lineInfo.m_class.m_subService, lineInfo.m_class.m_level).Select(pf => pf.Info == null ? "<unnamed>" : pf.Info.name).ToArray(); // TODO refactor
+			Array.Sort(prefabNames);
+
+			if (prefabIndex != null) {
+				if (prefabIndex < 0 || prefabIndex >= prefabNames.Length) {
+					// invalid prefab index
+					prefabIndex = null;
+				}
+			}
+
+			string prefabName = null;
+			if (prefabIndex == null) {
+				prefabName = TransportLineMod.GetRandomPrefab(lineId);
+			} else {
+				prefabName = prefabNames[(int)prefabIndex];
+			}
+
+			if (prefabName == null) {
+				return false;
+			}
+
+			ushort depotId = TransportLineMod.GetDepot(lineId);
+
+			if (! TransportLineMod.CanAddVehicle(depotId, ref Singleton<BuildingManager>.instance.m_buildings.m_buffer[depotId], lineInfo)) {
+				return false;
+			}
+
+			simMan.AddAction(() => {
+				TransportLineMod.SetBudgetControlState(lineId, false);
+
+				if (depotId == 0) {
+					TransportLineMod.IncreaseTargetVehicleCount(lineId);
+				} else {
+					TransportLineMod.EnqueueVehicle(lineId, prefabName, true);
+				}
+			});
+			return true;
+		}
+
+		public bool RemoveTransportVehicle(ushort lineId, int? vehicleIndex = null) {
+			TransportManager transportMan = Singleton<TransportManager>.instance;
+			SimulationManager simMan = Singleton<SimulationManager>.instance;
+
+			if (!TransportOverviewLoadingExtension.GameLoaded) {
+				return false;
+			}
+
+			if ((transportMan.m_lines.m_buffer[lineId].m_flags & (TransportLine.Flags.Created | TransportLine.Flags.Temporary | TransportLine.Flags.Hidden)) != TransportLine.Flags.Created) {
+				// invalid line
+				return false;
+			}
+
+			string[] enqueuedVehiclePrefabs = TransportLineMod.GetEnqueuedVehicles(lineId);
+			if (enqueuedVehiclePrefabs != null && enqueuedVehiclePrefabs.Length > 0) {
+				// remove a vehicle from the waiting queue
+				if (vehicleIndex == null) {
+					// remove vehicle that was queued most recently
+					vehicleIndex = enqueuedVehiclePrefabs.Length - 1;
+				} else if (vehicleIndex < 0) {
+					vehicleIndex = 0;
+				} else if (vehicleIndex >= enqueuedVehiclePrefabs.Length) {
+					vehicleIndex = enqueuedVehiclePrefabs.Length;
+				}
+
+				simMan.AddAction(() => {
+					TransportLineMod.SetBudgetControlState(lineId, false);
+					TransportLineMod.DequeueVehicles(lineId, new int[] { (int)vehicleIndex }, true);
+				});
+			} else {
+				// remove an active vehicle
+				if (vehicleIndex == null) {
+					vehicleIndex = 0;
+				}
+
+				VehicleManager vehicleMan = Singleton<VehicleManager>.instance;
+
+				simMan.AddAction(() => {
+					ushort vehicleId = 0;
+					ushort curVehicleId = transportMan.m_lines.m_buffer[lineId].m_vehicles;
+					int iter = 0;
+					while (curVehicleId != 0) {
+						ushort firstVehicleId = vehicleMan.m_vehicles.m_buffer[curVehicleId].GetFirstVehicle(curVehicleId);
+
+						if (iter == 0) {
+							// remember the first vehicle on line in case vehicleIndex is out of bounds
+							vehicleId = curVehicleId;
+						}
+
+						if (iter == vehicleIndex) {
+							// found!
+							vehicleId = curVehicleId;
+							break;
+						}
+
+						curVehicleId = vehicleMan.m_vehicles.m_buffer[curVehicleId].m_nextLineVehicle;
+						if (++iter > VehicleManager.MAX_VEHICLE_COUNT) {
+							CODebugBase<LogChannel>.Error(LogChannel.Core, "Invalid vehicle list detected!\n" + Environment.StackTrace);
+							break;
+						}
+					}
+
+					// remove the vehicle
+					if (vehicleId == 0) {
+						return;
+					}
+
+					TransportLineMod.SetBudgetControlState(lineId, false);
+					TransportLineMod.RemoveVehicle(lineId, vehicleId, true);
+				});
+			}
+
+			return true;
 		}
 	}
 }

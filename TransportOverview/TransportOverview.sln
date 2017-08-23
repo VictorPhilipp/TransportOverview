@@ -4,11 +4,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransportOverview", "TransportOverview\TransportOverview.csproj", "{1B961E99-DF01-4921-84AD-03C6F6AF9E83}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F8759084-DF5B-4A54-B73C-824640A8FA3F} = {F8759084-DF5B-4A54-B73C-824640A8FA3F}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransportOverview.Test", "TransportOverview.Test\TransportOverview.Test.csproj", "{98E88448-EB39-4E54-953C-676CDCEC178D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{1B961E99-DF01-4921-84AD-03C6F6AF9E83} = {1B961E99-DF01-4921-84AD-03C6F6AF9E83}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSUtil.CameraControl", "..\CSUtil.CameraControl\CSUtil.CameraControl\CSUtil.CameraControl\CSUtil.CameraControl.csproj", "{F8759084-DF5B-4A54-B73C-824640A8FA3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +34,12 @@ Global
 		{98E88448-EB39-4E54-953C-676CDCEC178D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98E88448-EB39-4E54-953C-676CDCEC178D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98E88448-EB39-4E54-953C-676CDCEC178D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8759084-DF5B-4A54-B73C-824640A8FA3F}.Benchmark|Any CPU.ActiveCfg = Release|Any CPU
+		{F8759084-DF5B-4A54-B73C-824640A8FA3F}.Benchmark|Any CPU.Build.0 = Release|Any CPU
+		{F8759084-DF5B-4A54-B73C-824640A8FA3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8759084-DF5B-4A54-B73C-824640A8FA3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8759084-DF5B-4A54-B73C-824640A8FA3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8759084-DF5B-4A54-B73C-824640A8FA3F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

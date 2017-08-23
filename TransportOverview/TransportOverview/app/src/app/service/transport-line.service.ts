@@ -62,9 +62,6 @@ export class TransportLineService {
 		for (var i = 0; i < line.vehicles.length; ++i) {
 			ret += line.vehicles[i].averageNumPassengers;
 		}
-		if (line.vehicles.length > 0) {
-			ret = Math.round(ret / line.vehicles.length);
-		}
 		return ret;
 	}
 	

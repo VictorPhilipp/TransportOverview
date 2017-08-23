@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { DataTablesModule } from "angular-datatables";
 
+import { CameraService } from "./service/camera.service";
 import { TransportLineService } from "./service/transport-line.service";
 import { TransportStopService } from "./service/transport-stop.service";
 import { TransportVehicleService } from "./service/transport-vehicle.service";
@@ -42,6 +43,7 @@ import { RouterModule } from '@angular/router';
 		DataTablesModule
 	],
 	providers: [
+		CameraService,
 		TransportLineService,
 		TransportStopService,
 		TransportVehicleService

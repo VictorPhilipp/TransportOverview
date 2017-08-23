@@ -9,7 +9,7 @@ html, body {
 .colorBox {
 	display: inline-block;
 	width: 32px;
-	height: 32px;
+	height: 16px;
 	border: 1px solid black;
 }
 
@@ -26,14 +26,12 @@ html, body {
 }
 
 .strong {
-	font-weight: bold;
+	font-weight: bold !important;
 }
 
 .hidden {
 	display: none;
 }
-
-
 
 /* The main DIV for the map */
 .line-map
@@ -46,21 +44,27 @@ html, body {
 }
 
 /* Text labels */
-.stop-label
-{
-	text-decoration: none;
-	color: black;
+.stop-label {
 	transform: rotate(45deg);
 	text-align: left !important;
 	margin-top: 40px !important;
 	margin-left: -15px !important;
 }
 
+.stop-label, .vehicle-label {
+	font-size: 8pt;
+	color: black;
+	text-decoration: none;
+}
+
 .vehicle-label
 {
-	font-size: 95%;
-	color: black;
 	margin-top: -5px !important;
+}
+
+.vehicle-label a, .stop-label a {
+	cursor: pointer;
+	color: black;
 }
 
 #legend
@@ -82,4 +86,23 @@ html, body {
 .line-map span
 {
 	margin: 5px 5px 5px 0;
+}
+
+/* Grid layout */
+.rw {
+	content: " ";
+	display: table;
+	max-width: none;
+	width: 100%;
+	margin: 0;
+}
+
+.col {
+	float: left;
+	position: relative;
+	width: 100%;
+}
+
+.small-6 {
+	width: 50% !important;
 }
