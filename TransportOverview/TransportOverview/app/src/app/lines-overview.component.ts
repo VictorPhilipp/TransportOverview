@@ -40,7 +40,7 @@ export class LinesOverviewComponent implements OnInit, AfterViewChecked {
 		this.math = Math;
 		this.dtOptions = {
 			pageLength : 25,
-			order: [[8, 'desc'], [15, 'asc']]
+			order: [[6, 'desc']]
 		};
 	}
 	
@@ -57,6 +57,7 @@ export class LinesOverviewComponent implements OnInit, AfterViewChecked {
 		
 		this.transportLineService.getTransportLines()
 			.subscribe((lines : TransportLine[]) => {
+				console.log('got lines');
 				this.lines = lines;
 
 				if (this.dtElement.dtInstance != null) {

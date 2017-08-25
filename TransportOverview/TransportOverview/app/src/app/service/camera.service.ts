@@ -12,7 +12,7 @@ export class CameraService {
 	goToVehicle(vehicleId : number) : void {
 		this.http.get('/PTO/Camera', {
 			params: new HttpParams()
-			.set('instanceType', '6') // TODO improve
+			.set('instanceType', 'Vehicle')
 			.set('instanceId', vehicleId.toString())
 		})
 		.map(res => res)
@@ -23,7 +23,7 @@ export class CameraService {
 	goToNode(nodeId : number) : void {
 		this.http.get('/PTO/Camera', {
 			params: new HttpParams()
-			.set('instanceType', '3') // TODO improve
+			.set('instanceType', 'Node')
 			.set('instanceId', nodeId.toString())
 		})
 		.map(res => res)

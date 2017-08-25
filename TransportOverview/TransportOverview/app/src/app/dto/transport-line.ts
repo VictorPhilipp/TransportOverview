@@ -5,7 +5,9 @@ import { TransportStop } from './transport-stop';
 
 export class TransportLine {
 	id : number;
-	type : string;
+	service : string;
+	subService : string;
+	level : string;
 	color : Color;
 	name : string;
 	flags : number;
@@ -16,5 +18,5 @@ export class TransportLine {
 	vehicles : TransportVehicle[];
 	stops : TransportStop[];
 	enqueuedVehiclePrefabs : string[];
-	allowedVehiclePrefabs : string[];
+	allowedVehiclePrefabIndices : number[];
 }

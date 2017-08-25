@@ -6,9 +6,19 @@
 		public int id = 0;
 
 		/// <summary>
-		/// Line type (Bus, Train, Metro, etc.)
+		/// Line service
 		/// </summary>
-		public ItemClass.SubService type = ItemClass.SubService.None;
+		public ItemClass.Service service = ItemClass.Service.None;
+
+		/// <summary>
+		/// Line sub service (Bus, Train, Metro, etc.)
+		/// </summary>
+		public ItemClass.SubService subService = ItemClass.SubService.None;
+
+		/// <summary>
+		/// Line level
+		/// </summary>
+		public ItemClass.Level level = ItemClass.Level.None;
 
 		/// <summary>
 		/// Line color
@@ -58,7 +68,7 @@
 		/// <summary>
 		/// Allowed vehicle prefab names
 		/// </summary>
-		public string[] allowedVehiclePrefabs = null;
+		public int[] allowedVehiclePrefabIndices = null;
 
 		/// <summary>
 		/// Transport stops

@@ -38,81 +38,142 @@
 	<h3>Details</h3>
 	<div class="rw">
 		<div class="col small-6">
-			<table>
+			<div class="rw">
+				<div class="col small-6">
+					<h4>General</h4>
+
+					<div class="box-item">
+						<div class="title">
+							Type
+						</div>
+						<div class="value">
+							{{line.subService.replace("PublicTransport", "")}}
+						</div>
+					</div>
+
+					<div class="box-item">
+						<div class="title">
+							Vehicles
+						</div>
+						<div class="value">
+							{{line.vehicles.length}}
+							<ng-container *ngIf="line.enqueuedVehiclePrefabs.length > 0">
+								(+{{line.enqueuedVehiclePrefabs.length}})
+							</ng-container>
+						</div>
+					</div>
+
+					<div class="box-item">
+						<div class="title">
+							Stops
+						</div>
+						<div class="value">
+							{{line.stops.length}}
+						</div>
+					</div>
+				</div>
+				<div class="col small-6">
+					<h4>Passengers</h4>
+
+					<div class="box-item">
+						<div class="title">
+							On board
+						</div>
+						<div class="value">
+							{{getTransportLineService().getTotalNumLinePassengersOnBoard(line)}}
+							/
+							{{getTransportLineService().getTotalMaxNumLinePassengers(line)}}<br/>
+							({{(getTransportLineService().getTotalNumLinePassengersOnBoard(line) / getTransportLineService().getTotalMaxNumLinePassengers(line)
+								* 100).toFixed(1)}} %)
+						</div>
+					</div>
+
+					<div class="box-item">
+						<div class="title">
+							Waiting
+						</div>
+						<div class="value">
+							{{getTransportLineService().getTotalNumLineWaitingPassengers(line)}}
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="rw">
+				<div class="col small-6">
+					<h4>Last week</h4>
+
+					<div class="box-item">
+						<div class="title">
+							Passengers
+						</div>
+						<div class="value">
+							{{getTransportLineService().getTotalNumLinePassengersLastWeek(line)}}
+						</div>
+					</div>
+
+					<div class="box-item">
+						<div class="title">
+							Income
+						</div>
+						<div class="value currency">
+							{{getTransportLineService().getAverageNumLinePassengers(line)}}
+						</div>
+					</div>
+				</div>
+				<div class="col small-6">
+					<h4>Average</h4>
+		
+					<div class="box-item">
+						<div class="title">
+							Passengers
+						</div>
+						<div class="value">
+							{{getTransportLineService().getAverageNumLinePassengers(line)}}
+						</div>
+					</div>
+
+					<div class="box-item">
+						<div class="title">
+							Income
+						</div>
+						<div class="value currency">
+							{{getTransportLineService().getAverageLineIncome(line)}}
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!--<table>
 				<tbody>
-					<tr>
-						<td class="strong">Id</td>
-						<td>{{line.id}} ({{lineId}})</td>
-					</tr>
-					<tr>
-						<td class="strong">Type</td>
-						<td>{{line.type}}</td>
-					</tr>
 					<tr>
 						<td class="strong">Color</td>
 						<td><span class="colorBox" [ngStyle]="{'background-color': 'rgb(' + line.color.r + ',' + line.color.g + ',' + line.color.b + ')'}"></span></td>
 					</tr>
 					<tr>
-						<td class="strong">Name</td>
-						<td>{{line.name}}</td>
-					</tr>
-					<tr>
-						<td class="strong">Flags</td>
-						<td>{{line.flags}}</td>
-					</tr>
-					<tr>
 						<td class="strong">Budget</td>
 						<td class="percent">{{line.budgetInPercent}}</td>
 					</tr>
-					<tr>
-						<td class="strong">Vehicles</td>
-						<td>{{line.vehicles.length}}</td>
-					</tr>
-					<tr>
-						<td class="strong">Stops</td>
-						<td>{{line.stops.length}}</td>
-					</tr>
-					<tr>
-						<td class="strong">Waiting passengers</td>
-						<td>{{getTransportLineService().getTotalNumLineWaitingPassengers(line)}}</td>
-					</tr>
-					<tr>
-						<td class="strong">Passengers on board</td>
-						<td>{{getTransportLineService().getTotalNumLinePassengersOnBoard(line)}}</td>
-					</tr>
-					<tr>
-						<td class="strong">Passenger capacity</td>
-						<td>{{getTransportLineService().getTotalMaxNumLinePassengers(line)}}</td>
-					</tr>
-					<tr>
-						<td class="strong">Passenger efficiency</td>
-						<td class="percent">{{(getTransportLineService().getTotalNumLinePassengersOnBoard(line) / getTransportLineService().getTotalMaxNumLinePassengers(line)
-							* 100).toFixed(1)}}</td>
-					</tr>
-					<tr>
-						<td class="strong">Passengers (last week)</td>
-						<td>{{getTransportLineService().getTotalNumLinePassengersLastWeek(line)}}</td>
-					</tr>
-					<tr>
-						<td class="strong">Income (last week)</td>
-						<td class="currency">{{getTransportLineService().getTotalLineIncome(line)}}</td>
-					</tr>
-					<tr>
-						<td class="strong">Passengers (average)</td>
-						<td>{{getTransportLineService().getAverageNumLinePassengers(line)}}</td>
-					</tr>
-					<tr>
-						<td class="strong">Income (average)</td>
-						<td class="currency">{{getTransportLineService().getAverageLineIncome(line)}}</td>
-					</tr>
 				</tbody>
-			</table>
+			</table>-->
 		</div>
 		<div class="col small-6">
-			<ng-container *ngIf="line.allowedVehiclePrefabs.length > 0">
+			<ng-container *ngIf="line.allowedVehiclePrefabIndices.length > 0">
+				<h4>Allowed vehicles</h4>
+				<ul class="allowed-vehicles">
+					<li *ngFor="let prefabName of allVehiclePrefabs; let i=index;">
+						<label>
+							<input type="checkbox" [value]="i" [checked]="line.allowedVehiclePrefabIndices.indexOf(i) >= 0 ? 'checked' : ''" (change)="toggleAllowedVehiclePrefab($event)" />
+							{{prefabName}}
+						</label>
+					</li>
+				</ul>
+
 				<h4>Add vehicles</h4>
-				<select (change)="selectedPrefabIndex = $event.target.value;">
-						<option *ngFor="let vehiclePrefab of line.allowedVehiclePrefabs; let i=index; let isOdd=odd; let isEven=even;" [value]="i">{{vehiclePrefab}}</option>
+				<select #prefabSelect (change)="selectedPrefabIndex = $event.target.value;">
+						<option *ngFor="let prefabIndex of line.allowedVehiclePrefabIndices; let i=index; let isOdd=odd; let isEven=even;" [value]="i">
+							{{allVehiclePrefabs[prefabIndex]}}
+						</option>
 					</select>
 				<button (click)="addTransportVehicle(line.id, selectedPrefabIndex)">Add vehicle</button>
 			</ng-container>
@@ -138,60 +199,57 @@
 		</div>
 	</div>
 
-	<h3>Vehicles</h3>
-	<table class="dataTable display">
-		<thead>
-			<tr>
-				<th>Id</th>
-				<th>Name</th>
-				<th>Passengers on board</th>
-				<th>Passengers<br/>(last week)</th>
-				<th>Income<br/>(last week)</th>
-				<th>Passengers<br/>(average)</th>
-				<th>Income<br/>(average)</th>
-				<th>Position on line</th>
-				<th>Actions</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr *ngFor="let vehicle of line.vehicles; let i=index; let isOdd=odd; let isEven=even;" class="row" [class.odd]="isOdd" [class.even]="isEven">
-				<td>{{vehicle.id}}</td>
-				<td>{{vehicle.name}}</td>
-				<td class="text-right">{{vehicle.numPassengers}} / {{vehicle.maxNumPassengers}}</td>
-				<td class="text-right">{{vehicle.lastWeekNumPassengers}}</td>
-				<td class="text-right currency">{{(vehicle.lastWeekIncome / 100).toFixed(2)}}</td>
-				<td class="text-right">{{vehicle.averageNumPassengers}}</td>
-				<td class="text-right currency">{{(vehicle.averageIncome / 100).toFixed(2)}}</td>
-				<td class="text-right">{{math.round(vehicle.relLinePos * 100)}} %</td>
-				<td><button (click)="getCameraService().goToVehicle(vehicle.id)">Center camera</button> <button *ngIf="line.enqueuedVehiclePrefabs.length == 0"
-					 (click)="removeTransportVehicle(line.id, i)">Remove</button></td>
-			</tr>
-		</tbody>
-	</table>
-
-	<h3>Stops</h3>
-	<table class="dataTable display">
-		<thead>
-			<tr>
-				<th>Id</th>
-				<th>Name</th>
-				<th>District</th>
-				<th>Waiting passengers</th>
-				<th>Last week passengers<br/>(in / out)</th>
-				<th>Position on line</th>
-				<th>Actions</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr *ngFor="let stop of line.stops; let isOdd=odd; let isEven=even; let i = index;" class="row" [class.odd]="isOdd" [class.even]="isEven">
-				<td>{{stop.id}}</td>
-				<td>{{stop.name != null ? stop.name : 'Stop #' + (i+1)}}</td>
-				<td>{{stop.districtName == null ? 'None' : stop.districtName}}</td>
-				<td class="text-right">{{stop.numWaitingPassengers}}</td>
-				<td class="text-right">+ {{stop.lastWeekServedPassengers.incoming}} / - {{stop.lastWeekServedPassengers.outgoing}}</td>
-				<td class="text-right">{{math.round(stop.relLinePos * 100)}} %</td>
-				<td><button (click)="getCameraService().goToNode(stop.id)">Center camera</button></td>
-			</tr>
-		</tbody>
-	</table>
+	<div class="rw">
+		<div class="col small-6">
+			<h3>Vehicles</h3>
+			<table class="dataTable display">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Passengers</th>
+						<th>Passengers<br/>(last week)</th>
+						<th>Income<br/>(last week)</th>
+						<th>Passengers<br/>(average)</th>
+						<th>Income<br/>(average)</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let vehicle of line.vehicles; let i=index; let isOdd=odd; let isEven=even;" class="row" [class.odd]="isOdd" [class.even]="isEven">
+						<td>{{vehicle.name}}</td>
+						<td class="text-right">{{vehicle.numPassengers}} / {{vehicle.maxNumPassengers}}</td>
+						<td class="text-right">{{vehicle.lastWeekNumPassengers}}</td>
+						<td class="text-right currency">{{(vehicle.lastWeekIncome / 100).toFixed(2)}}</td>
+						<td class="text-right">{{vehicle.averageNumPassengers}}</td>
+						<td class="text-right currency">{{(vehicle.averageIncome / 100).toFixed(2)}}</td>
+						<td><button (click)="getCameraService().goToVehicle(vehicle.id)">Center camera</button> <button *ngIf="line.enqueuedVehiclePrefabs.length == 0"
+							(click)="removeTransportVehicle(line.id, i)">Remove</button></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="col small-6">
+			<h3>Stops</h3>
+			<table class="dataTable display">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>District</th>
+						<th>Waiting<br/>passengers</th>
+						<th>Passengers<br/>last week</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let stop of line.stops; let isOdd=odd; let isEven=even; let i = index;" class="row" [class.odd]="isOdd" [class.even]="isEven">
+						<td>{{stop.name != null ? stop.name : 'Stop #' + (i+1)}}</td>
+						<td>{{stop.districtName == null ? 'None' : stop.districtName}}</td>
+						<td class="text-right">{{stop.numWaitingPassengers}}</td>
+						<td class="text-right">+ {{stop.lastWeekServedPassengers.incoming}} / - {{stop.lastWeekServedPassengers.outgoing}}</td>
+						<td><button (click)="getCameraService().goToNode(stop.id)">Center camera</button></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
 </ng-container>

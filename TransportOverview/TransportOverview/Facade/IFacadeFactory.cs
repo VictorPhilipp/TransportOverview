@@ -7,7 +7,8 @@ namespace TransportOverview.Facade {
 	public interface IFacadeFactory {
 		ICameraFacade CameraFacade { get; }
 		ITransportLineFacade TransportLineFacade { get; }
-		ITransportVehicleFacade TransportVehicleFacade { get; }
 		ITransportStopFacade TransportStopFacade { get; }
+		ITransportVehicleFacade TransportVehicleFacade { get; }
+		ITransportVehiclePrefabFacade TransportVehiclePrefabFacade { get; }
 	}
 }

@@ -12,7 +12,7 @@ namespace TransportOverview.Test {
 			List<TransportLineData> lines = new List<TransportLineData>();
 			TransportLineData line = new TransportLineData();
 
-			line.type = ItemClass.SubService.PublicTransportBus;
+			line.subService = ItemClass.SubService.PublicTransportBus;
 			//line.color = Color.white;
 			line.name = "Test";
 			line.flags = (uint)TransportLine.Flags.Created;

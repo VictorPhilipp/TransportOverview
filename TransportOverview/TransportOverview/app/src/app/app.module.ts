@@ -7,6 +7,7 @@ import { CameraService } from "./service/camera.service";
 import { TransportLineService } from "./service/transport-line.service";
 import { TransportStopService } from "./service/transport-stop.service";
 import { TransportVehicleService } from "./service/transport-vehicle.service";
+import { TransportVehiclePrefabService } from "./service/transport-vehicle-prefab.service";
 
 import { AppComponent } from './app.component';
 import { LinesOverviewComponent } from './lines-overview.component';
@@ -46,7 +47,8 @@ import { RouterModule } from '@angular/router';
 		CameraService,
 		TransportLineService,
 		TransportStopService,
-		TransportVehicleService
+		TransportVehicleService,
+		TransportVehiclePrefabService
 	],
 	bootstrap: [AppComponent]
 })

@@ -22,13 +22,13 @@ namespace TransportOverview.Facade.Impl {
 			TransportManager transportMan = Singleton<TransportManager>.instance;
 
 			for (uint lineId = 0; lineId < transportMan.m_lines.m_buffer.Length; ++lineId) {
-				TransportLineData line = GetTransportLine((ushort)lineId);
-
-				if (line == null) {
+				if ((transportMan.m_lines.m_buffer[lineId].m_flags & (TransportLine.Flags.Created | TransportLine.Flags.Temporary | TransportLine.Flags.Hidden)) != TransportLine.Flags.Created
+					|| !transportMan.m_lines.m_buffer[lineId].Complete
+				) {
 					continue;
 				}
 
-				lines.Add(line);
+				lines.Add(GetTransportLine((ushort)lineId));
 			}
 
 			return lines;
@@ -41,17 +41,20 @@ namespace TransportOverview.Facade.Impl {
 				return null;
 			}
 
-			if ((transportMan.m_lines.m_buffer[lineId].m_flags & (TransportLine.Flags.Created | TransportLine.Flags.Temporary | TransportLine.Flags.Hidden)) != TransportLine.Flags.Created) {
-				return null;
+			if ((transportMan.m_lines.m_buffer[lineId].m_flags & (TransportLine.Flags.Created | TransportLine.Flags.Temporary | TransportLine.Flags.Hidden)) != TransportLine.Flags.Created
+					|| !transportMan.m_lines.m_buffer[lineId].Complete
+			) {
+				throw new ArgumentException("Line is invalid / not complete");
 			}
 
 			TransportLineData line = new TransportLineData();
 			TransportInfo lineInfo = transportMan.m_lines.m_buffer[lineId].Info;
 			if (lineInfo != null) {
-				line.type = lineInfo.GetSubService();
+				line.service = lineInfo.GetService();
+				line.subService = lineInfo.GetSubService();
+				line.level = lineInfo.GetClassLevel();
 
-				line.allowedVehiclePrefabs = VehiclePrefabs.instance.GetPrefabs(lineInfo.m_class.m_service, lineInfo.m_class.m_subService, lineInfo.m_class.m_level).Select(pf => pf.Info == null ? "<unnamed>" : pf.Info.name).ToArray(); // TODO refactor; might be a bit too much here
-				Array.Sort(line.allowedVehiclePrefabs); // TODO might be a bit too much here
+				line.allowedVehiclePrefabIndices = Facades.TransportVehiclePrefabFacade.GetTransportLineVehiclePrefabIndices(lineId).ToArray();
 			}
 			line.id = (int)lineId;
 			

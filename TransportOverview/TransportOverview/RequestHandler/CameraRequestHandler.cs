@@ -35,26 +35,28 @@ namespace TransportOverview.RequestHandler {
 
 		public override IResponseFormatter Handle(HttpListenerRequest request) {
 			if (request.QueryString.HasKey(INSTANCE_TYPE) && request.QueryString.HasKey(INSTANCE_ID)) {
-				switch (int.Parse(request.QueryString.Get(INSTANCE_TYPE))) {
-					case (int)InstanceType.None:
+				InstanceType instanceType = (InstanceType)Enum.Parse(typeof(InstanceType), request.QueryString.Get(INSTANCE_TYPE), true);
+
+				switch (instanceType) {
+					case InstanceType.None:
 					default:
 						throw new ArgumentException($"Invalid {INSTANCE_TYPE} given: {request.QueryString.Get(INSTANCE_TYPE)}");
-					case (int)InstanceType.Building:
+					case InstanceType.Building:
 						Constants.FacadeFactory.CameraFacade.GoToBuilding(ushort.Parse(request.QueryString.Get(INSTANCE_ID)), true);
 						break;
-					case (int)InstanceType.CitizenInstance:
+					case InstanceType.CitizenInstance:
 						Constants.FacadeFactory.CameraFacade.GoToCitizenInstance(ushort.Parse(request.QueryString.Get(INSTANCE_ID)), true);
 						break;
-					case (int)InstanceType.Node:
+					case InstanceType.Node:
 						Constants.FacadeFactory.CameraFacade.GoToNode(ushort.Parse(request.QueryString.Get(INSTANCE_ID)), true);
 						break;
-					case (int)InstanceType.ParkedVehicle:
+					case InstanceType.ParkedVehicle:
 						Constants.FacadeFactory.CameraFacade.GoToParkedVehicle(ushort.Parse(request.QueryString.Get(INSTANCE_ID)), true);
 						break;
-					case (int)InstanceType.Segment:
+					case InstanceType.Segment:
 						Constants.FacadeFactory.CameraFacade.GoToSegment(ushort.Parse(request.QueryString.Get(INSTANCE_ID)), true);
 						break;
-					case (int)InstanceType.Vehicle:
+					case InstanceType.Vehicle:
 						Constants.FacadeFactory.CameraFacade.GoToVehicle(ushort.Parse(request.QueryString.Get(INSTANCE_ID)), true);
 						break;
 				}

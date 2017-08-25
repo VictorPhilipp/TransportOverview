@@ -23,9 +23,10 @@ namespace TransportOverview.Facade.Impl {
 				return stops;
 			}
 
-			if ((transportMan.m_lines.m_buffer[lineId].m_flags & (TransportLine.Flags.Created | TransportLine.Flags.Temporary | TransportLine.Flags.Hidden)) != TransportLine.Flags.Created) {
-				// error: method should only be called for valid lines
-				return null;
+			if ((transportMan.m_lines.m_buffer[lineId].m_flags & (TransportLine.Flags.Created | TransportLine.Flags.Temporary | TransportLine.Flags.Hidden)) != TransportLine.Flags.Created
+					|| !transportMan.m_lines.m_buffer[lineId].Complete
+			) {
+				throw new ArgumentException("Line is invalid / not complete");
 			}
 
 			uint problems = (uint)Notification.Problem.None;

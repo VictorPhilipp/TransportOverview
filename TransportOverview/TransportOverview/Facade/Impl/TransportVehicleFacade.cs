@@ -22,9 +22,10 @@ namespace TransportOverview.Facade.Impl {
 				return vehicles;
 			}
 
-			if ((transportMan.m_lines.m_buffer[lineId].m_flags & (TransportLine.Flags.Created | TransportLine.Flags.Temporary | TransportLine.Flags.Hidden)) != TransportLine.Flags.Created) {
-				// error: method should only be called for valid lines
-				return null;
+			if ((transportMan.m_lines.m_buffer[lineId].m_flags & (TransportLine.Flags.Created | TransportLine.Flags.Temporary | TransportLine.Flags.Hidden)) != TransportLine.Flags.Created
+					|| !transportMan.m_lines.m_buffer[lineId].Complete
+			) {
+				throw new ArgumentException("Line is invalid / not complete");
 			}
 
 			ushort curVehicleId = transportMan.m_lines.m_buffer[lineId].m_vehicles;
@@ -84,20 +85,21 @@ namespace TransportOverview.Facade.Impl {
 				return false;
 			}
 
-			if ((transportMan.m_lines.m_buffer[lineId].m_flags & (TransportLine.Flags.Created | TransportLine.Flags.Temporary | TransportLine.Flags.Hidden)) != TransportLine.Flags.Created) {
-				// invalid line
-				return false;
+			if ((transportMan.m_lines.m_buffer[lineId].m_flags & (TransportLine.Flags.Created | TransportLine.Flags.Temporary | TransportLine.Flags.Hidden)) != TransportLine.Flags.Created
+					|| !transportMan.m_lines.m_buffer[lineId].Complete
+			) {
+				throw new ArgumentException("Line is invalid / not complete");
 			}
 
 			TransportInfo lineInfo = transportMan.m_lines.m_buffer[lineId].Info;
 			if (lineInfo == null) {
 				return false;
 			}
-			string[] prefabNames = VehiclePrefabs.instance.GetPrefabs(lineInfo.m_class.m_service, lineInfo.m_class.m_subService, lineInfo.m_class.m_level).Select(pf => pf.Info == null ? "<unnamed>" : pf.Info.name).ToArray(); // TODO refactor
-			Array.Sort(prefabNames);
+			IList<string> prefabNames = Facades.TransportVehiclePrefabFacade.GetTransportVehiclePrefabs(lineInfo.m_class);
+			IList<int> allowedPrefabIndices = Facades.TransportVehiclePrefabFacade.GetTransportLineVehiclePrefabIndices(lineId);
 
 			if (prefabIndex != null) {
-				if (prefabIndex < 0 || prefabIndex >= prefabNames.Length) {
+				if (prefabIndex < 0 || prefabIndex >= allowedPrefabIndices.Count) {
 					// invalid prefab index
 					prefabIndex = null;
 				}
@@ -107,7 +109,7 @@ namespace TransportOverview.Facade.Impl {
 			if (prefabIndex == null) {
 				prefabName = TransportLineMod.GetRandomPrefab(lineId);
 			} else {
-				prefabName = prefabNames[(int)prefabIndex];
+				prefabName = prefabNames[allowedPrefabIndices[(int)prefabIndex]];
 			}
 
 			if (prefabName == null) {

@@ -30,5 +30,11 @@ namespace TransportOverview.Facade.Impl {
 				return Impl.TransportVehicleFacade.Instance;
 			}
 		}
+
+		public ITransportVehiclePrefabFacade TransportVehiclePrefabFacade {
+			get {
+				return Impl.TransportVehiclePrefabFacade.Instance;
+			}
+		}
 	}
 }

@@ -89,13 +89,16 @@
     <Compile Include="Facade\IFacadeFactory.cs" />
     <Compile Include="Facade\Impl\CameraFacade.cs" />
     <Compile Include="Facade\Impl\FacadeFactory.cs" />
+    <Compile Include="Facade\Impl\TransportVehiclePrefabFacade.cs" />
     <Compile Include="Facade\Impl\TransportLineFacade.cs" />
     <Compile Include="Facade\Impl\TransportStopFacade.cs" />
     <Compile Include="Facade\Impl\TransportVehicleFacade.cs" />
     <Compile Include="Facade\ITransportStopFacade.cs" />
     <Compile Include="Facade\ITransportVehicleFacade.cs" />
+    <Compile Include="Facade\ITransportVehiclePrefabFacade.cs" />
     <Compile Include="RequestHandler\IExtRequestHandler.cs" />
     <Compile Include="RequestHandler\CameraRequestHandler.cs" />
+    <Compile Include="RequestHandler\TransportVehiclePrefabsRequestHandler.cs" />
     <Compile Include="RequestHandler\TransportVehiclesRequestHandler.cs" />
     <Compile Include="RequestHandler\TransportStopsRequestHandler.cs" />
     <Compile Include="RequestHandler\TransportLinesUIRequestHandler.cs" />

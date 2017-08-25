@@ -1,5 +1,5 @@
 html, body {
-	font-size: 90%;
+	font-size: 85%;
 }
 
 * {
@@ -67,6 +67,11 @@ html, body {
 	color: black;
 }
 
+ul.allowed-vehicles {
+	list-style: none;
+	padding-left: 0px;
+}
+
 #legend
 {
 	float: left;
@@ -105,4 +110,27 @@ html, body {
 
 .small-6 {
 	width: 50% !important;
+	padding: 0.25rem;
+	box-sizing: border-box;
+}
+
+.box-item {
+	padding: 0.5rem;
+	margin: 0.5rem;
+	width: 7rem;
+	height: 4rem;
+	border: 1px solid grey;
+	background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(239,239,239,1) 100%);
+	float: left;
+	text-align: center;
+}
+
+.box-item .title {
+	font-size: 1rem;
+	margin-bottom: 0.5rem;
+	font-weight: bold;
+}
+
+.box-item .value {
+	font-size: 1.25rem;
 }
